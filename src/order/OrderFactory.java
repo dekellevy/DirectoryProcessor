@@ -1,22 +1,32 @@
 package order;
 
-import filesprocessing.IllegalUseException;
 import java.io.File;
 import java.util.Comparator;
 
 public class OrderFactory {
-    public static Comparator<File> createOrder(String order, boolean reverse) throws IllegalUseException {
-        Comparator<File> comparator = switch (order) {
+    public static Comparator<File> createOrder(String line) throws IllegalOrderException {
+        if (!isValidPattern(line))
+            throw new IllegalOrderException("bad format of order command");
+
+        String[] parts = line.split("#");
+        String order_name = parts[0];
+        int numParts = parts.length;
+
+        Comparator<File> comparator = switch (order_name) {
             case "abs" -> absComp();
             case "type" -> typeComp();
             case "size" -> sizeComp();
-            default -> throw new IllegalUseException("illegal order name");
+            default -> throw new IllegalOrderException("illegal order name");
         };
 
-        if (reverse)
+        if (parts[numParts-1].equals("REVERSE"))
             return comparator.reversed();
 
         return comparator;
+    }
+
+    public static Comparator<File> defaultOrder(){
+        return absComp();
     }
 
     private static Comparator<File> absComp(){
@@ -59,5 +69,14 @@ public class OrderFactory {
             }
         }
         return new sizeComparator();
+    }
+
+    private static boolean isValidPattern(String line){
+        String[] parts = line.split("#");
+        int numParts = parts.length;
+
+        if((numParts == 2 && !parts[1].equals("REVERSE")) || numParts > 2)
+            return false;
+        return true;
     }
 }
