@@ -38,6 +38,7 @@ public class DirectoryProcessor {
         }
 
         while (!parser.isFinished()){
+            System.out.println("====== new SECTION =======");
             try{
                 filter = parser.getNextFilter();
                 if (filter == null) // EOF

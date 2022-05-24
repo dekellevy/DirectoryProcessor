@@ -16,7 +16,7 @@ public class Parser {
 
 
     public Parser(File src_file) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(src_file));
+        br = new BufferedReader(new FileReader(src_file));
         curLine = 0;
         finishedStatus = false;
     }
